@@ -342,6 +342,213 @@ unpacking, reading or copying.
 
   7. Additional Terms.
 
+"""
+File: Chatbot
+Author(s): Diya Shakkottai
+Date: 11/08/2023
+Description: Bot to chat with user
+"""
+#----IMPORT LIBRARIES-----
+import random
+import string
+import math
+
+#----DEFINED FUNCTIONS-----
+def suggestions(a_list, num_times, printall=False):
+    '''Prints randomly chosen or ordered elements from given list'''
+    if printall is True:
+        for ele in a_list:
+            print(f"{a_list.index(ele)}. {ele}")
+    else:
+        print("\n")
+        copied = [ele for ele in a_list]
+        for i in range(int(num_times)):
+            x = random.choice(copied)
+            print(x)
+            copied.remove(x)  
+        print("\n")
+        
+def animal_predictions(points):
+    '''Chooses animal and description based on point range'''
+    base_val = math.floor((points+10)/5)
+    animal = random.choice(animals[5*base_val: 5*base_val+5]).capitalize()
+    description = random.choice(descriptions[3*base_val: 3*base_val+3]).capitalize()
+    final = description + " " + animal
+    return final
+    
+
+#----MAIN CODE/SEQUENCING-----
+
+#point system and response/suggestion lists
+responses = ["No? Cool. You must be really confident or really annoying.", \
+            "", "Want to quantify your failings, huh?", "You say that now...", \
+            "Are you sure about this...?", "The regret will come after the score..."]
+
+activities = ["swimming", "jogging", "drawing", "videogames", \
+              "sports", "coding", "eating", "crying", "sleeping", \
+              "doing...school", "hiding", "flying"]
+
+pro_habits = ["showering in the morning", "doing your homework early", "reading textbooks for fun", \
+              "being nice to family members", "eating a balanced diet", "sleeping a normal amount", \
+              "regularly exercising", "wake up on the first ring of your alarm"]
+
+bad_habits = ["ignore other people", "snore loudly", "forget to do laundry", \
+            "spend an abnormal amount of time on social media", 
+            "watch television at 3 am", "criticize others' hard work", \
+            "'utilize' internet resources during exams", "lack personal hygiene"]
+
+life_choices = ["be famous because of working hard", "be famous without working hard", \
+                "live an ordinary life", "support a large extended family", \
+                "be slightly below average so you appreciate the little things in life", \
+                "live in your parents basement", "What future? I'm dropping out tomorrow."]
+
+animals = ["rat", "monkey", "goldfish", "donkey", "worm",\
+            "hippo", "koala", "slug", "pig", "sheep",\
+            "raccoon", "frog", "bear", "walrus", "sparrow",\
+            "kangaroo", "rabbit", "ostrich", "gazelle", "owl",\
+            "tiger", "panther", "shark", "eagle", "cobra"]
+
+descriptions = ["dead", "extinct", "sleeping",\
+                "lazy", "slimy", "hungry", \
+                "foraging", "hiding", "traveling", \
+                "Bouncing", "Leaping", "Prancing", \
+                "Prowling", "Hunting", "Deathly"]
+points = 0
+
+
+#Introductions
+username = input("Hi, I am Tobtahc. What's your name? ")
+print(f"Welcome {username}! Unfortunately, my name is cooler than yours.")
+r_list = list(username.lower())
+r_list.reverse()
+r_str = ''.join(r_list)
+r_str = string.capwords(r_str)
+
+print(f"If your name was {r_str} it might be cooler, but...\n")
+print("Anyway, let me help you predict your success in your future")
+
+#Activity suggestions
+print("This will work based on a point system for how well you answer these questions. \n")
+happy = input("First of all, are you happy with your life? ")
+if "y" in happy.lower():
+    print("I'm glad!")
+    points+=1
+else:
+    print("Oh dear...I fear this won' t go well...")
+    points-=1
+    
+print("\nHere are some activities you might enjoy.")
+
+suggestions(activities, 5)
+
+fav = input("Which of these is your favourite? ")
+
+if fav in activities[0:7]:
+    print("Cool. I'll keep that in mind.")
+    points+=1
+    print("Do you have any of these habits? ")
+else:
+    print("How strange. You must be partially depressed.")
+    points-=1
+    print("Given that, I wonder if you have any good/normal habits...")
+    print("Do you do any of the following?" )
+
+
+#Good habit suggestions
+suggestions(pro_habits, 3)
+ans = int(input("How many? (0 is an option) "))
+if ans==0:
+    print("You know what you need to do when you go home today.")
+elif ans==1:
+    print("Well...better then nothing.")
+else:
+    print("Good for you!")
+points+=ans
+
+#Motivation understanding
+motivation = int(input("\nHow motivated are you in school?. Rank as a scale 1-5: "))
+points+=math.floor(motivation)
+
+if motivation < 3:
+    if motivation==1:
+        print("So...remind me why you are in school right now...")
+    lone = input("Well...would you prefer to spend time alone, with friends or with family? ")
+    if lone=="alone":
+        points-=1
+        print("Actually, that makes sense. I hope you know that this affecting your score.")
+    elif "friends" in lone:
+        print("Well, maybe you need smarter freinds to motivate you more.")
+    else:
+        print("They aren't disappointed in you? Hmm...")
+    print("\nYou seem like the type to always...")
+else:
+    print("Oh, you're one of THOSE types.\n")
+    print("I don't suppose you ever...")
+    
+#Bad habit suggestions
+habit_1 = random.choice(bad_habits)
+bad_habits.remove(habit_1)
+ans = input(f"{habit_1}. Do you? ")
+if "y" in ans.lower():
+    points-=1
+    
+for i in range(5):
+    breaking = input("Let's keep going with bad habits.\
+ Say stop if you want to. Otherwise, press enter. ")
+    if breaking=="stop":
+        break
+    print("\n"+ random.choice(responses))
+    next_habit = random.choice(bad_habits)
+    bad_habits.remove(next_habit)
+    ans = input(f"Do you ever catch yourself wanting to {next_habit}? ")
+    if ans.lower()=="yes":
+        points-=1
+        
+#Future income suggestions
+print("\nNow let's talk future.\nWould you rather...\n")
+suggestions(life_choices, 4, True)
+ans = int(input("\nChoose the best: "))
+points+=4-ans
+
+#Points and success output
+print(f"\nPoints: {points}")
+classification = animal_predictions(points)
+if points<-5:
+    print("Your success capabilites seem quite low. I recommend changing\
+ your lifestyle, getting a better community, and overall working harder.\
+ That is, if you want to ever make something of yourself.")
+    print(f"Classification: {classification}")
+    print("Career Prediction: Gas station employee")
+    
+elif -5<=points<0:
+    print("Well...you seem to be quite lazy, but you are not quite over the\
+ verge yet. You still have a chance to make something of your life, \
+ so put a little bit more effort into things soon. ")
+    print(f"Classification: {classification}")
+    print("Career Prediction: Construction worker")
+    
+elif 0<=points<5:
+    print("Right in the middle! It seems you are quite undecided\
+ about the attitude to go through life with. How about pushing yourself\
+ just slightly harder?")
+    print(f"Classification: {classification}")
+    print("Career Prediction: Dentist")
+    
+elif 5<=points<10:
+    print("On the upward slope! You seem to working pretty hard\
+ and going through life with a good attitude. Keep pushing\
+ your limits!")
+    print(f"Classification: {classification}")
+    print("Career Prediction: Engineer")
+    
+else:
+    print("Wow are you amazing! Some crazy workaholic-genius star!\
+ I can see you doing great things in the future- just you wait.\
+ But remember to take time to enjoy life once in a while too!")
+    print(f"Classification: {classification}")
+    print("Career Prediction: Elon Musk")
+    print(random.choice(["", "Good luck running Tesla!"]))
+
   "Additional permissions" are terms that supplement the terms of this
 License by making exceptions from one or more of its conditions.
 Additional permissions that are applicable to the entire Program shall
